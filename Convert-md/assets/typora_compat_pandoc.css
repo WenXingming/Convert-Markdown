@@ -1,0 +1,73 @@
+/*
+  目的：让 Pandoc 生成的 HTML 在 wkhtmltopdf 下的渲染更接近 Typora 导出。
+  背景：Typora 的主题 CSS 大量依赖 .md-fences/.md-image 等类名；Pandoc 输出通常是 <pre><code>、<img>、div.sourceCode。
+  这个文件用于“把 Typora 风格映射到 Pandoc HTML 结构”，并尽量只覆盖图片/代码块。
+*/
+
+/* ---- 图片：Typora 常见效果是居中、最大宽度不超出页面 ---- */
+@media screen {
+    body {
+        /* 浏览器里看 HTML 时不要铺满全屏，更接近 Typora 编辑区宽度 */
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 24px 18px;
+    }
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+p > img,
+figure > img {
+    display: block;
+    margin: 0.8em auto;
+}
+
+figure {
+    margin: 0.8em 0;
+}
+
+figcaption {
+    text-align: center;
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 0.3em;
+}
+
+/* ---- 代码块：适配 Pandoc 的 <pre><code> / div.sourceCode 结构 ---- */
+pre {
+    font-family: "JetBrains Mono", "JetBrainsMono", "Consolas", "Menlo", "Monaco", monospace;
+    font-size: 0.92em;
+    line-height: 1.45;
+    background: #f7f7f7;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 12px;
+    overflow-x: auto;
+    white-space: pre;
+}
+
+/* Pandoc 语法高亮常见容器 */
+div.sourceCode {
+    margin: 0.9em 0;
+}
+
+div.sourceCode pre {
+    margin: 0;
+}
+
+/* 避免 inline code 的背景影响 fenced code */
+pre code {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    white-space: pre;
+}
+
+/* 行内代码：保持 Typora 常见的淡底色 + 圆角（若主题已定义，这里只是兜底） */
+code {
+    font-family: "JetBrains Mono", "JetBrainsMono", "Consolas", "Menlo", "Monaco", monospace;
+}
