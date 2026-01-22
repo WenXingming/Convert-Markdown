@@ -13,7 +13,7 @@
 
 转换完成后，PDF 会生成在**每个 `.md` 文件同目录**下，文件名保持一致（仅扩展名变为 `.pdf`）。
 
-## Features ✅
+## Features ✨
 
 - 递归遍历目标目录，批量转换所有 `.md`
 - 自动处理 Windows 下常见的非 UTF-8 编码（例如 GB18030/GBK），避免 Pandoc 读取失败
@@ -21,7 +21,7 @@
 - 可选保留中间 HTML 产物，便于排查“图片丢失 / 样式不生效”等问题
 - 内置两份 CSS：默认主题 + Pandoc HTML 结构兼容层，使输出更接近 Typora 观感
 
-## Prerequisites ✅
+## Prerequisites 🛠
 
 必须依赖：
 
@@ -35,12 +35,12 @@
 
 - Pillow（仅在你需要将 HTML 中引用的本地 `.webp` 图片自动转成 `.png` 时才需要；未安装也能运行，只是不会做 webp 转换）
 
-## Installation ✅
+## Installation 🚀
 
 1. **Clone the repository**
 
 	```bash
-	git clone <https://github.com/WenXingming/Convert-Markdown.git>
+	git clone https://github.com/WenXingming/Convert-Markdown.git
 	cd Convert-Markdown
 	```
 
@@ -60,7 +60,7 @@
 	pip install Pillow
 	```
 
-## Usage ✅
+## Usage 📄
 
 脚本入口是 [main.py](main.py)，使用示例命令：
 
@@ -79,7 +79,7 @@ Output：
 - 对每个 `xxx.md`：生成 `xxx.pdf`
 - 中间文件：默认会清理 `xxx.html`；若指定 `--keep-html-on-success` 则会保留 html 文件
 
-## Problems
+## Problems & Solutions ❓
 
 1. 提示找不到 pandoc / wkhtmltopdf
 
@@ -96,6 +96,5 @@ Output：
 	- 脚本内已做了一些兜底（例如忽略资源加载错误；CSS 导致失败时会尝试不带 CSS 重试一次）
 	- 仍失败的话，保留 HTML 并查看错误输出最有效
 
-## License
+## License 📜
 
-个人自用脚本，无许可证声明。大家自取自用...
