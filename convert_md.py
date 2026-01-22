@@ -2,7 +2,6 @@ import os
 import re
 import subprocess
 import urllib.parse
-import argparse
 from pathlib import Path
 
 try:
@@ -493,36 +492,3 @@ class ConvertMD:
                 count += 1
 
         print(f"\n处理完成！共转换了 {count} 个文件。")
-
-
-if __name__ == "__main__":
-    # 命令行参数：让脚本更易用、更可复现
-    # 示例：
-    # python .\Convert-md\convert-md.py --target-folder "D:\notes" --keep-html-on-success
-    parser = argparse.ArgumentParser(description="Convert Markdown files to PDF via Pandoc->HTML->wkhtmltopdf")
-    parser.add_argument(
-        "--target-folder",
-        required=True,
-        default=r"C:\Users\28016\Documents\WPSDrive\1126954793\WPS云盘\「Repositories」\「操作系统」", # required = True，实际运行时必须提供此参数
-        help="包含 Markdown 文件的目标文件夹路径",
-    )
-    parser.add_argument(
-        "--css",
-        required=False,
-        default=r"assets\whitey_plus.css",
-        help="CSS 文件路径（可用绝对路径或相对 Convert-md 目录）",
-    )
-    parser.add_argument(
-        "--keep-html-on-success",
-        action="store_true", # 指定此参数即为 True。不使用上面的参数，因为上面是字符串参数。
-        help="转换成功也保留临时 HTML（用于排查图片/样式问题）",
-    )
-
-    args = parser.parse_args()
-
-    converter = ConvertMD(
-        target_folder=args.target_folder,
-        css_path=args.css,
-        keep_html_on_success=args.keep_html_on_success,
-    )
-    converter.convert()
