@@ -25,18 +25,22 @@ def argument_parser():
     parser.add_argument(
         "--target-folder",
         required=True,
+        action="store", # 隐式默认行为，将参数值存储在 args 对象中（类型为 string）
         default=r"C:\Users\28016\Documents\WPSDrive\1126954793\WPS云盘\「Repositories」\「操作系统」",  # required = True，实际运行时必须提供此参数
         help="包含 Markdown 文件的目标文件夹路径",
     )
     parser.add_argument(
         "--css",
         required=False,
+        action="store",
         default=r"assets\whitey_plus.css",
         help="CSS 文件路径（可用绝对路径或相对 Convert-md 目录）",
     )
     parser.add_argument(
         "--keep-html-on-success",
-        action="store_true",  # 指定此参数即为 True。不使用上面的参数，因为上面是字符串参数。
+        required=False,
+        action="store_true",  # 命令行中出现此参数（--keep-html-on-success）即为 True，否则为 False。类型为 bool
+        default=False,
         help="转换成功也保留临时 HTML（用于排查图片/样式问题）",
     )
 
