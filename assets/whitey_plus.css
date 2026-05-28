@@ -89,8 +89,9 @@ body b {
     color: rgb(0, 0, 0);
 }
 
-/* 文档主容器 */
-#write {
+/* 文档主容器（Typora: #write, Pandoc: body） */
+#write,
+body {
     max-width: 960px;
     margin: 0 auto;
     margin-bottom: 2em;
@@ -100,7 +101,8 @@ body b {
 
 /* 宽屏适配 */
 @media only screen and (min-width: 1100px) {
-    #write {
+    #write,
+    body {
         max-width: 1500px;
     }
 }
@@ -114,7 +116,8 @@ body b {
     /* 打印时代码块字体 */
     code,
     pre,
-    .md-fences {
+    .md-fences,
+    div.sourceCode pre {
         font-size: 14px;
     }
 
@@ -125,13 +128,13 @@ body b {
 }
 
 /* ========== 标题样式 ========== */
-/* 所有标题通用样式 */
-#write h1,
-#write h2,
-#write h3,
-#write h4,
-#write h5,
-#write h6 {
+/* 所有标题通用样式（Typora: #write h*, Pandoc: body h*） */
+#write h1, body h1,
+#write h2, body h2,
+#write h3, body h3,
+#write h4, body h4,
+#write h5, body h5,
+#write h6, body h6 {
     font-family: 'TsangerXuanSan';
     padding: 0px;
     color: #000000;
@@ -139,6 +142,7 @@ body b {
 
 /* 一级标题 */
 #write>h1:first-child,
+body>h1:first-child,
 h1 {
     font-weight: normal;
     font-size: 1.8em;
@@ -208,39 +212,39 @@ h6 {
     background: #b1a8f4;
     border-radius: 6px;
 } */
-/* 经典灰调（最推荐，万能百搭） */
-/* code {
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-    padding: 0.2em 0.4em;
-    margin: 0;
-    font-size: 85%;
-    
-    background-color: rgba(175, 184, 193, 0.2);
-    border-radius: 6px;
-    color: #24292f;
-} */
-/* 现代科技感（淡蓝色调） */
-/* code {
-    background-color: #f0f7ff;
-    color: #0366d6;
-    border: 1px solid #d1e9ff;
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-family: 'Fira Code', monospace;
-} */
-
+/* inline code */
 code {
     font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
     font-size: 0.9em;
-    /* color: #e01e5a; */
-    /* color: #ff0051; */
-    /* color: #bf00ff; */
     color: #e01e8f;
     background: #f8f8f8;
     padding: 3px 6px;
     margin: 0 2px;
     border-radius: 4px;
     border: 1px solid #eeeeee;
+}
+
+/* 图片居中（Pandoc 生成的 <img> 没有 .md-image 类名） */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+p > img,
+figure > img {
+    display: block;
+    margin: 0.8em auto;
+}
+
+figure {
+    margin: 0.8em 0;
+}
+
+figcaption {
+    text-align: center;
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 0.3em;
 }
 
 h1+h2,
@@ -305,13 +309,71 @@ pre {
     background: white;
 }
 
-.md-fences {
+/* 代码块基础样式（Typora: .md-fences, Pandoc: pre/div.sourceCode） */
+.md-fences,
+pre:not(.md-meta-block),
+div.sourceCode pre {
     margin-left: 0em;
     padding-left: 1em;
-    border: 1px solid #ddd;
+    border: 1px solid #30363d;
     padding-bottom: 8px;
     padding-top: 6px;
     margin-bottom: 1.5em;
+}
+
+/* Pandoc 代码块结构样式（来自 Pandoc 默认模板，需保留以确保正确渲染） */
+div.sourceCode {
+    margin: 0.9em 0;
+}
+
+@media screen {
+    div.sourceCode { overflow: auto; }
+}
+
+div.sourceCode pre {
+    margin: 0;
+}
+
+pre.sourceCode { margin: 0; }
+
+pre {
+    overflow: auto;
+}
+
+pre > code.sourceCode {
+    white-space: pre;
+    position: relative;
+}
+
+pre > code.sourceCode > span {
+    display: inline-block;
+    line-height: 1.25;
+}
+
+pre > code.sourceCode > span:empty {
+    height: 1.2em;
+}
+
+.sourceCode {
+    overflow: visible;
+}
+
+code {
+    white-space: pre-wrap;
+}
+
+/* 避免 inline code 影响 fenced code */
+pre code {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    white-space: pre;
+}
+
+@media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 
 a {
@@ -510,7 +572,8 @@ table tbody+tbody {
     background: #fafafa;
 }
 
-.md-fences .code-tooltip {
+.md-fences .code-tooltip,
+div.sourceCode .code-tooltip {
     bottom: -2em !important;
 }
 
@@ -658,4 +721,40 @@ pre:not(.md-meta-block) code,
 div.sourceCode pre code {
     background-color: #161b22;
     color: #c9d1d9;
+}
+
+/* Pandoc 语法高亮 - GitHub Dark 配色 */
+code span.kw { color: #ff7b72; font-weight: bold; } /* Keyword */
+code span.cf { color: #ff7b72; font-weight: bold; } /* ControlFlow */
+code span.op { color: #c9d1d9; } /* Operator */
+code span.bu { color: #79c0ff; } /* BuiltIn */
+code span.fu { color: #d2a8ff; } /* Function */
+code span.st { color: #a5d6ff; } /* String */
+code span.sc { color: #a5d6ff; } /* SpecialChar */
+code span.ss { color: #a5d6ff; } /* SpecialString */
+code span.ch { color: #a5d6ff; } /* Char */
+code span.co { color: #8b949e; font-style: normal; } /* Comment */
+code span.do { color: #8b949e; font-style: normal; } /* Documentation */
+code span.an { color: #8b949e; } /* Annotation */
+code span.cv { color: #8b949e; } /* CommentVar */
+code span.wa { color: #8b949e; } /* Warning */
+code span.cn { color: #ffa657; } /* Constant */
+code span.dv { color: #ffa657; } /* DecVal */
+code span.fl { color: #ffa657; } /* Float */
+code span.bn { color: #ffa657; } /* BaseN */
+code span.at { color: #ffa657; } /* Attribute */
+code span.ot { color: #79c0ff; } /* Other */
+code span.im { color: #79c0ff; font-weight: bold; } /* Import */
+code span.pp { color: #79c0ff; } /* Preprocessor */
+code span.dt { color: #ffa657; } /* DataType */
+code span.va { color: #c9d1d9; } /* Variable */
+code span.er { color: #ff7b72; font-weight: bold; } /* Error */
+
+/* Pandoc 行号 */
+pre.numberSource {
+    border-left: 1px solid #30363d;
+}
+
+pre.numberSource code > span > a:first-child::before {
+    color: #6e7681;
 }
