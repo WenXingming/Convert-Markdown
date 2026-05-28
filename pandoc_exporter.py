@@ -1,6 +1,9 @@
+import logging
 import os
 import subprocess
 from pathlib import Path
+
+log = logging.getLogger(__name__)
 
 
 class PandocExporter:
@@ -14,7 +17,7 @@ class PandocExporter:
             subprocess.run(["pandoc", "--version"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             return True
         except FileNotFoundError:
-            print("Pandoc is not installed. Please install it from https://pandoc.org/installing.html")
+            log.error("[FAIL] Pandoc 未安装，请从 https://pandoc.org/installing.html 安装")
             return False
 
     def check_prerequisites(self) -> bool:
@@ -24,7 +27,7 @@ class PandocExporter:
             return True
         if self.target.is_dir():
             return True
-        print(f"目标不存在或不是 .md 文件/文件夹: {self.target}")
+        log.error("[FAIL] 目标不存在或不是 .md 文件/文件夹: %s", self.target)
         return False
 
     def iter_markdown_files(self):
@@ -42,7 +45,7 @@ class PandocExporter:
 
     def convert_one_file(self, md_path: Path) -> bool:
         output_pdf = md_path.with_suffix(".pdf")
-        print(f"正在转换: {md_path.name} -> {output_pdf.name} ...")
+        log.info("[>>] 正在转换: %s", md_path.name)
 
         cmd = [
             "pandoc",
@@ -58,24 +61,32 @@ class PandocExporter:
 
         try:
             subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            print("  转换成功")
+            log.info("[OK]  转换成功: %s", output_pdf)
             return True
         except subprocess.CalledProcessError as e:
             stderr = e.stderr.decode("utf-8", errors="replace").strip() if e.stderr else ""
-            print(f"  转换失败: {stderr[:200]}" if stderr else f"  转换失败: {e}")
+            log.error("[FAIL] 转换失败: %s", stderr[:200] if stderr else str(e))
             return False
 
     def convert(self):
         if not self.check_prerequisites():
             return
 
-        print(f"转换目标: {self.target}")
+        files = list(self.iter_markdown_files())
+        log.info("=" * 100)
+        log.info("目标: %s", self.target)
+        log.info("找到 %d 个 Markdown 文件", len(files))
+        log.info("=" * 100)
+        
+        log.info("")
 
-        total_count = 0
-        count = 0
-        for md_path in self.iter_markdown_files():
-            total_count += 1
+        success = 0
+        for i, md_path in enumerate(files, 1):
+            log.info("[%d/%d]", i, len(files))
             if self.convert_one_file(md_path):
-                count += 1
+                success += 1
+            log.info("")
 
-        print(f"转换完成: {count}/{total_count} 个文件成功转换")
+        log.info("=" * 100)
+        log.info("转换完成: %d/%d 个文件成功转换", success, len(files))
+        log.info("=" * 100)

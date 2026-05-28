@@ -18,12 +18,31 @@
 """
 
 import argparse
+import logging
 
 from pandoc_exporter import PandocExporter
 from typora_exporter import TyporaExporter
 
 
+def setup_logging():
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+
+    fmt = logging.Formatter("%(message)s")
+    fh = logging.FileHandler("export.log", encoding="utf-8")
+    fh.setLevel(logging.DEBUG)
+    fh.setFormatter(logging.Formatter("[%(asctime)s]  %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
+
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+    ch.setFormatter(fmt)
+
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+
+
 def main():
+    setup_logging()
     parser = argparse.ArgumentParser(
         description="批量将 Markdown 文件转换为 PDF"
     )

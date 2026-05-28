@@ -1,3 +1,4 @@
+import logging
 import os
 import subprocess
 import time
@@ -7,6 +8,8 @@ import pyautogui
 
 pyautogui.FAILSAFE = False
 pyautogui.PAUSE = 0.2
+
+log = logging.getLogger(__name__)
 
 
 class TyporaExporter:
@@ -26,13 +29,13 @@ class TyporaExporter:
 
     def check_prerequisites(self) -> bool:
         if not os.path.isfile(self.TYPERA_EXE):
-            print(f"Typora 未安装: {self.TYPERA_EXE}")
+            log.error("[FAIL] Typora 未安装: %s", self.TYPERA_EXE)
             return False
         if self.target.is_file() and self.target.suffix == ".md":
             return True
         if self.target.is_dir():
             return True
-        print(f"目标不存在或不是 .md 文件/文件夹: {self.target}")
+        log.error("[FAIL] 目标不存在或不是 .md 文件/文件夹: %s", self.target)
         return False
 
     def iter_markdown_files(self):
@@ -69,7 +72,7 @@ class TyporaExporter:
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     def convert_one_file(self, md_path: Path) -> bool:
-        print(f"正在导出: {md_path.name} ...")
+        log.info("[>>] 正在导出: %s", md_path.name)
 
         try:
             subprocess.Popen([self.TYPERA_EXE, str(md_path)])
@@ -96,18 +99,18 @@ class TyporaExporter:
             time.sleep(2)
 
             if expected_pdf.is_file():
-                print(f"  导出成功: {expected_pdf}")
+                log.info("[OK]  导出成功: %s", expected_pdf)
                 self.kill_typora()
                 time.sleep(3)
                 return True
             else:
-                print(f"  未找到 PDF: {expected_pdf}")
+                log.error("[FAIL] 未找到 PDF: %s", expected_pdf)
                 self.kill_typora()
                 time.sleep(3)
                 return False
 
         except Exception as e:
-            print(f"  导出失败: {e}")
+            log.error("[FAIL] 导出失败: %s", e)
             self.kill_typora()
             return False
 
@@ -120,13 +123,20 @@ class TyporaExporter:
         time.sleep(2)
 
         files = list(self.iter_markdown_files())
-        print(f"找到 {len(files)} 个 Markdown 文件")
-        print("开始批量导出（期间请勿操作鼠标键盘）...\n")
+        log.info("=" * 100)
+        log.info("找到 %d 个 Markdown 文件", len(files))
+        log.info("开始批量导出（期间请勿操作鼠标键盘）...")
+        log.info("=" * 100)
+
+        log.info("")
 
         success = 0
         for i, md_path in enumerate(files, 1):
-            print(f"[{i}/{len(files)}]", end=" ")
+            log.info("[%d/%d]", i, len(files))
             if self.convert_one_file(md_path):
                 success += 1
+            log.info("")
 
-        print(f"\n导出完成！成功 {success}/{len(files)} 个文件。")
+        log.info("-" * 100)
+        log.info("导出完成！成功 %d/%d 个文件。", success, len(files))
+        log.info("=" * 100)
