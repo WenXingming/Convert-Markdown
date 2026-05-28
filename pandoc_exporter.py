@@ -31,10 +31,14 @@ class PandocExporter:
         if self.target.is_file():
             yield self.target
         else:
-            for root, _, files in os.walk(self.target):
-                for file in files:
-                    if file.endswith(".md"):
-                        yield Path(root) / file
+            # 递归遍历所有子目录
+            # for root, _, files in os.walk(self.target):
+            #     for file in files:
+            #         if file.endswith(".md"):
+            #             yield Path(root) / file
+            for file in self.target.iterdir():
+                if file.suffix == ".md":
+                    yield file
 
     def convert_one_file(self, md_path: Path) -> bool:
         output_pdf = md_path.with_suffix(".pdf")
