@@ -66,9 +66,11 @@ class PandocExporter:
 
         print(f"转换目标: {self.target}")
 
+        total_count = 0
         count = 0
         for md_path in self.iter_markdown_files():
+            total_count += 1
             if self.convert_one_file(md_path):
                 count += 1
 
-        print(f"\n处理完成！共转换了 {count} 个文件。")
+        print(f"转换完成: {count}/{total_count} 个文件成功转换")
