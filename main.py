@@ -9,9 +9,11 @@ python main.py --target-folder ${Your Folder} --keep-html-on-success
 
 功能：
     将指定文件夹中的所有 Markdown 文件转换为 PDF。
-    使用 Pandoc 将 Markdown 转换为 HTML，然后使用 wkhtmltopdf 将 HTML 转换为 PDF。所以需要预先安装：
+    使用 Pandoc 将 Markdown 转换为 HTML，然后使用 Playwright（Chromium）将 HTML 转换为 PDF。
+    渲染引擎与 Typora 一致（均为 Chromium），效果接近 Typora 导出。
+    需要预先安装：
         Pandoc：https://pandoc.org/installing.html
-        wkhtmltopdf：https://wkhtmltopdf.org/downloads.html
+        Playwright：pip install playwright && playwright install chromium
 """
 
 import argparse
@@ -20,7 +22,7 @@ from convert_md import ConvertMD
 """ 参数解析器 """
 def argument_parser():
     parser = argparse.ArgumentParser(
-        description="Convert Markdown files to PDF via Pandoc->HTML->wkhtmltopdf"
+        description="Convert Markdown files to PDF via Pandoc->HTML->Playwright(Chromium)"
     )
     parser.add_argument(
         "--target-folder",

@@ -1,16 +1,14 @@
-/* 注：自定义本地字体 */
+/* 自定义字体：仓耳玄三 - 用于标题 */
 @font-face {
     font-family: 'TsangerXuanSan';
     font-style: normal;
     font-weight: 500;
     src:
-        /* 不知为何本地字体中找不到... */
         local('TsangerXuanSan04 W04'),
         local('TsangerXuanSan04 W05'),
         local('TsangerXuanSanM W03'),
         local('TsangerXuanSanM W04'),
         local('TsangerXuanSanM W05'),
-        /* 所以直接指定 URL */
         url('./仓耳玄三02-W04.ttf') format('truetype'),
         url('./仓耳玄三04-W04.ttf') format('truetype'),
         url('./仓耳玄三04-W05.ttf') format('truetype'),
@@ -19,32 +17,51 @@
         url('./仓耳玄三MW05.ttf') format('truetype');
 }
 
-/* 避免 convert-md 脚本报错 */
-/* @font-face {
+/* 西文字体：Cantarell - 用于正文 */
+@font-face {
     font-family: "Cantarell";
-    src: url('lapis/Cantarell-Regular.ttf');
+    src:
+        local("Cantarell"),
+        local("Segoe UI"),
+        local("Arial");
 }
 
+/* 等宽字体：JetBrains Mono - 用于代码 */
 @font-face {
     font-family: "JetBrainsMono";
-    src: url('lapis/JetBrainsMono-Regular.ttf');
+    src:
+        local("JetBrains Mono"),
+        local("Consolas"),
+        local("Cascadia Mono");
 }
 
+/* 思源宋体 - 中文正文字体 */
 @font-face {
     font-family: "SourceHanSerifCN";
-    src: url('lapis/SourceHanSerifCN-Regular.otf');
+    src:
+        local("Source Han Serif CN"),
+        local("Source Han Serif SC"),
+        local("Noto Serif CJK SC"),
+        local("SimSun");
 }
 
+/* 思源宋体 - 粗体 */
 @font-face {
     font-family: "SourceHanSerifCN";
-    src: url('lapis/SourceHanSerifCN-Bold.otf');
+    src:
+        local("Source Han Serif CN Bold"),
+        local("Source Han Serif SC Bold"),
+        local("Noto Serif CJK SC Bold"),
+        local("SimSun");
     font-weight: bold;
-} */
+}
 
+/* 全局字体大小 */
 html {
     font-size: 19px;
 }
 
+/* 基础页面样式 */
 html,
 body {
     margin: auto;
@@ -52,54 +69,63 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* 正文样式 */
 body {
     font-family:
         'SourceHanSerifCN',
         'Vollkorn',
         'Cantarell',
-        'TsangerXuanSan'
-        /* "TsangerJinKai03", */
-        /* "TsangerXuanSanM\ W04", */
-        /* "TsangerXuanSanM W04", */
-        /* '宋体',  */
-    ;
+        'TsangerXuanSan';
     font-weight: normal;
     color: #333;
-    /* 设置行间距 */
     line-height: 1;
     text-align: justify;
 }
 
-/* 针对加粗文本 */
+/* 加粗文本样式 */
 body strong,
 body b {
     font-weight: bold;
     color: rgb(0, 0, 0);
 }
 
+/* 文档主容器 */
 #write {
     max-width: 960px;
     margin: 0 auto;
     margin-bottom: 2em;
-    /* 设置行间距 */
     line-height: 1.4;
     padding-top: 40px;
 }
 
+/* 宽屏适配 */
 @media only screen and (min-width: 1100px) {
     #write {
-        max-width: 1800px;
+        max-width: 1500px;
     }
 }
 
+/* 打印样式 */
 @media print {
-    html {
-        font-size: 13px;
+    body {
+        font-size: 14px;
+    }
+
+    /* 打印时代码块字体 */
+    code,
+    pre,
+    .md-fences {
+        font-size: 14px;
+    }
+
+    /* 打印时列表缩进 */
+    ol {
+        padding-left: 40px;
     }
 }
 
-/* Typography
--------------------------------------------------------- */
+/* ========== 标题样式 ========== */
+/* 所有标题通用样式 */
 #write h1,
 #write h2,
 #write h3,
@@ -107,108 +133,118 @@ body b {
 #write h5,
 #write h6 {
     font-family: 'TsangerXuanSan';
-    /* margin: 1em 0 0.2em; */
-    /* 标题的上外、左右外、下外边距 */
     padding: 0px;
-    /* color: var(--primary-color); */
-    color: #1796da;
+    color: #000000;
 }
 
+/* 一级标题 */
 #write>h1:first-child,
 h1 {
     font-weight: normal;
     font-size: 1.8em;
+    color: #000000;
     text-align: center;
-    /* margin: 1em 0 0.2em; */
-    /* font-style: italic; 斜体？ */
 }
 
+/* 二级标题 */
 h2 {
-    /* margin-top: 1.2em; 上间距 */
     font-weight: normal;
-    /*加粗*/
     font-size: 1.65em;
     text-align: left;
-    /*居中*/
+
+    border-bottom: 1px solid #000000;
+    padding-bottom: 0.2em;
 }
 
+/* 三级标题 */
 h3 {
-    /* margin-top: 1em; */
-    /* margin-top: 1.2em; 上间距 */
     font-weight: normal;
-    /*加粗*/
     font-size: 1.5em;
     text-align: left;
-    /*居中*/
 
-    /* font-style: italic; */
+    border-bottom: 1px solid #000000;
+    padding-bottom: 0.2em;
 }
 
+/* 四级标题 */
 h4 {
-    /* margin-top: 1em; */
-    /* margin-top: 1.2em; 上间距 */
-    font-weight: bold;
-    /*加粗*/
+    font-weight: normal;
     font-size: 1.35em;
     text-align: left;
-    /*居左*/
 
-    /* font-style: italic; */
+    border-bottom: 1px solid #000000;
+    padding-bottom: 0.2em;
 }
 
+/* 五级标题 */
 h5 {
-    /* margin-top: 1em; */
-    /* margin-top: 1.2em; 上间距 */
-    font-weight: bold;
-    /*加粗*/
+    font-weight: normal;
     font-size: 1.2em;
     text-align: left;
-    /*居左*/
 
-    /* font-style: italic; */
+    border-bottom: 1px solid #000000;
+    padding-bottom: 0.2em;
 }
 
+/* 六级标题 */
 h6 {
-    /* margin-top: 1em; */
-    /* margin-top: 1.2em; 上间距 */
-    font-weight: bold;
-    /*加粗*/
+    font-weight: normal;
     font-size: 1.1em;
     text-align: left;
-    /*居左*/
 
-    /* font-style: italic; */
+    border-bottom: 1px solid #000000;
+    padding-bottom: 0.2em;
 }
 
 /* inline code ：反引号包括的内容 */
-code {
+/* code {
     font-family: 'Cantarell', 'SourceHanSerifCN', "Consolas", "Menlo", "Monaco", monospace, serif;
     font-weight: normal;
     color: rgb(0, 0, 0);
 
-    margin: 0 2px;
-    /* 设置外边距，左右各2像素 */
-    /* padding: 4px 6px;	设置内边距，上下4像素，左右6像素 */
-    padding: 1px 4px;
+    margin: 0 4px;
+    padding: 2px 5px;
     white-space: pre-wrap;
-    /* background: rgb(214, 217, 217); */
-    background: #e7e9e9;
-    border-radius: 8px;
-    /* 设置圆角半径为8像素 */
-}
-
-/* h2:after{
-	// border-bottom: 1px solid #2f2f2f;
-    content: '';
-    width: 100px;
-    display: block;
-    margin: 0 auto;
-    height: 1px;
+    background: #b1a8f4;
+    border-radius: 6px;
 } */
+/* 经典灰调（最推荐，万能百搭） */
+/* code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    
+    background-color: rgba(175, 184, 193, 0.2);
+    border-radius: 6px;
+    color: #24292f;
+} */
+/* 现代科技感（淡蓝色调） */
+/* code {
+    background-color: #f0f7ff;
+    color: #0366d6;
+    border: 1px solid #d1e9ff;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+} */
+
+code {
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-size: 0.9em;
+    /* color: #e01e5a; */
+    /* color: #ff0051; */
+    /* color: #bf00ff; */
+    color: #e01e8f;
+    background: #f8f8f8;
+    padding: 3px 6px;
+    margin: 0 2px;
+    border-radius: 4px;
+    border: 1px solid #eeeeee;
+}
 
 h1+h2,
 h2+h3 {
-    /* margin-top: 0.83em; */
     margin-top: 1px;
 }
 
@@ -223,85 +259,43 @@ p,
 /* 无序列表样式 */
 ul {
     list-style-type: disc;
-    /* 使用圆形点作为列表项标记 */
     padding-left: 3em;
-    /* margin: 0; */
-    /* 简写形式，上下左右都为0 */
 }
 
 ol {
     padding-left: 3em;
-    /* margin: 0; */
 }
-
-
-@media print {
-    ol {
-        padding-left: 40px;
-    }
-}
-
-/* blockquote {	//原版
-	margin-left: 1em;
-	padding-left: 1em;
-	border-left: 1px solid #ddd;
-} */
-
-/* blockquote {
-	background-color: #f9f9f9;
-	border-left: 4px solid #ccc;
-	padding: 10px;
-	margin: 10px 0;
-	
-} */
-
 
 /* 设置引用框的背景颜色、边框和内边距 */
 blockquote {
-    background-color: #ffffff;
-    /* 背景颜色 */
-    border: 2px solid #71a0d6;
-    /* 边框 */
+    background-color: #dff1ff;
+    border: 2px solid #000000;
     padding: 10px;
-    /* 内边距 */
     margin: 10px 0;
-    /* 外边距 */
     position: relative;
-    /* 相对定位 */
 
-    border-radius: 8px;
-    /* 👈 圆角，数值越大越圆 */
+    border-radius: 6px;
 }
 
-
-/* 设置引用框四周的伪元素为普通直线 */
+/* 设置引用框左侧和右侧的装饰线 */
 blockquote::before,
 blockquote::after {
     content: "";
-    /* 清空内容 */
     display: block;
-    /* 设置为块级元素 */
-    /* width: 1px; 左右宽度为4像素 */
     height: 100%;
-    /* 高度自适应 */
     background-color: #ccc;
-    /* 背景颜色为灰色 */
     position: absolute;
-    /* 绝对定位 */
     top: 0;
-    /* 距离顶部为0 */
 }
 
 /* 设置引用框左侧的伪元素位置 */
 blockquote::before {
     left: -2px;
-    /* 距离左边为-2像素 */
 }
 
 /* 设置引用框右侧的伪元素位置 */
 blockquote::after {
     right: -2px;
-    /* 距离右边为-2像素 */
 }
 
 
@@ -344,8 +338,12 @@ hr {
     color: #ddd;
     height: 1px;
     margin: 1em 0;
-    border-top: solid 2px #65a7e0;
+    border-top: solid 2px #6f87ff;
+    border-style: dashed;
+    /* border-top: solid 3px #6f87ff;
+    border-style: dotted; */
     /*粗细、颜色*/
+    /* 使用虚线 */
     border-bottom: none;
     border-left: 0;
     border-right: 0;
@@ -442,7 +440,6 @@ table tbody+tbody {
     padding-bottom: 10px;
     line-height: 1.8em;
     /* line-height: 1.3;	设置行间距 */
-    font-size: 0.9em;
     font-size: 0.76em;
     padding-left: 0;
 }
@@ -523,10 +520,7 @@ table tbody+tbody {
 
 
 
-/* ChatGpt 生成的代码块风格 */
-/** GitHub Dark theme for Typora CodeMirror **/
-
-/** GitHub Dark theme for Typora CodeMirror **/
+/* GitHub Dark 主题 - 代码块语法高亮 - Generated by ChatGPT */
 
 .cm-s-inner {
     background-color: #0d1117;
@@ -567,12 +561,11 @@ table tbody+tbody {
     background: rgba(255, 255, 255, 0.05);
 }
 
-/* Syntax highlighting */
+/* 语法高亮颜色 */
 .cm-s-inner .cm-keyword {
     color: #ff7b72;
 }
 
-/* 红偏粉 */
 .cm-s-inner .cm-operator {
     color: #c9d1d9;
 }
@@ -585,12 +578,10 @@ table tbody+tbody {
     color: #79c0ff;
 }
 
-/* 蓝色 */
 .cm-s-inner .cm-variable-3 {
     color: #ffa657;
 }
 
-/* 橙黄 */
 .cm-s-inner .cm-builtin {
     color: #79c0ff;
 }
@@ -603,24 +594,20 @@ table tbody+tbody {
     color: #ffa657;
 }
 
-/* 橙色 */
 .cm-s-inner .cm-def {
     color: #d2a8ff;
 }
 
-/* 紫色 */
 .cm-s-inner .cm-string {
     color: #a5d6ff;
 }
 
-/* 青蓝 */
 .cm-s-inner .cm-string-2 {
     color: #a5d6ff;
 }
 
 .cm-s-inner .cm-comment {
     color: #8b949e;
-    /* font-style: italic; */
     font-style: normal;
 }
 
@@ -628,7 +615,6 @@ table tbody+tbody {
     color: #7ee787;
 }
 
-/* 绿色 */
 .cm-s-inner .cm-meta {
     color: #79c0ff;
 }
@@ -656,15 +642,20 @@ table tbody+tbody {
 }
 
 /** apply to code fences **/
-.md-fences {
+.md-fences,
+pre:not(.md-meta-block),
+div.sourceCode pre {
     background-color: #0d1117;
     color: #c9d1d9;
     border: 1px solid #30363d;
     border-radius: 6px;
     padding: 0.6em 0.8em;
+
 }
 
-.md-fences .code-tooltip {
+.md-fences .code-tooltip,
+pre:not(.md-meta-block) code,
+div.sourceCode pre code {
     background-color: #161b22;
     color: #c9d1d9;
 }
