@@ -45,7 +45,9 @@ class PandocExporter:
             str(md_path),
             "-o", str(output_pdf),
             "--pdf-engine=xelatex",
+            "--wrap=none",
             "-V", "CJKmainfont=SimSun",
+            "-V", "fontsize=12pt",
             "-V", "geometry:margin=2.5cm",
         ]
 
