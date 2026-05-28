@@ -14,12 +14,12 @@ class TyporaExporter:
 
     TYPERA_EXE = r"C:\Program Files\Typora\Typora.exe"
 
-    # 文件菜单中"导出"的位置（从"另存为"再往下 8 个）
-    EXPORT_MENU_INDEX = 15
+    # 文件菜单中"导出"的位置
+    EXPORT_MENU_INDEX = 16
     # "导出"子菜单中 PDF 的位置
-    PDF_SUBMENU_INDEX = 1
+    PDF_SUBMENU_INDEX = 0
 
-    def __init__(self, target, wait_load=5, wait_export=8):
+    def __init__(self, target, wait_load=8, wait_export=12):
         self.target = Path(target)
         self.wait_load = wait_load
         self.wait_export = wait_export
@@ -45,7 +45,7 @@ class TyporaExporter:
                         yield Path(root) / file
 
     @staticmethod
-    def navigate_to_pdf_export(wait=0.5):
+    def navigate_to_pdf_export(wait=1):
         """从 File 菜单已打开的状态，导航到 导出 -> PDF。"""
         pyautogui.press("home")
         time.sleep(wait)
@@ -77,22 +77,29 @@ class TyporaExporter:
             self.navigate_to_pdf_export(wait=0.5)
 
             # 等待"另存为"对话框完全加载
-            time.sleep(5)
+            time.sleep(8)
             pyautogui.press("enter")
+            # 仅在 PDF 已存在时，覆盖确认框才会弹出
+            expected_pdf = md_path.with_suffix(".pdf")
+            if expected_pdf.is_file():
+                time.sleep(1)
+                pyautogui.press("left")
+                time.sleep(0.3)
+                pyautogui.press("enter")
 
             # 等待导出完成
             time.sleep(self.wait_export)
+            time.sleep(2)
 
-            expected_pdf = md_path.with_suffix(".pdf")
             if expected_pdf.is_file():
                 print(f"  导出成功: {expected_pdf}")
                 self.kill_typora()
-                time.sleep(2)
+                time.sleep(3)
                 return True
             else:
                 print(f"  未找到 PDF: {expected_pdf}")
                 self.kill_typora()
-                time.sleep(2)
+                time.sleep(3)
                 return False
 
         except Exception as e:

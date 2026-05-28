@@ -44,6 +44,7 @@ class PandocExporter:
             "pandoc",
             str(md_path),
             "-o", str(output_pdf),
+            "--resource-path", str(md_path.parent),
             "--pdf-engine=xelatex",
             "--wrap=none",
             "-V", "CJKmainfont=SimSun",
