@@ -1,33 +1,68 @@
 """
-此为脚本入口点。使用示例：
+批量将 Markdown 文件转换为 PDF。
 
-python main.py --target-folder "你的文件夹路径"
+使用示例：
+    python main.py "C:\\path\\to\\folder"
+    python main.py "C:\\path\\to\\file.md"
+    python main.py "C:\\path\\to\\folder" --method typora
 
-功能：
-    将指定文件夹中的所有 Markdown 文件批量转换为 PDF。
-    使用 Pandoc + XeLaTeX 直接转换，无需中间 HTML，无需额外 CSS。
-    需要预先安装：
-        Pandoc：https://pandoc.org/installing.html
-        TeX Live 或 MiKTeX（提供 xelatex）
+参数说明：
+    target          .md 文件或包含 .md 文件的文件夹路径（自动识别）
+    --method        导出方式：pandoc（默认）或 typora
+    --wait-load     Typora 加载等待秒数（仅 typora 模式，默认 3）
+    --wait-export   导出完成等待秒数（仅 typora 模式，默认 3）
+
+导出方式：
+    pandoc  - Pandoc + XeLaTeX 直接转换（默认，无需 GUI，需安装 Pandoc 和 TeX Live）
+    typora  - Typora GUI 自动化导出（效果与 Typora 原生一致，需安装 pyautogui）
 """
 
 import argparse
-from convert_md import ConvertMD
+
+from pandoc_exporter import PandocExporter
+from typora_exporter import TyporaExporter
 
 
-def argument_parser():
+def main():
     parser = argparse.ArgumentParser(
-        description="批量将 Markdown 文件转换为 PDF（Pandoc + XeLaTeX）"
+        description="批量将 Markdown 文件转换为 PDF"
     )
     parser.add_argument(
-        "--target-folder",
-        required=True,
-        help="包含 Markdown 文件的目标文件夹路径",
+        "target",
+        help=".md 文件或包含 .md 文件的文件夹路径",
     )
-    return parser.parse_args()
+    parser.add_argument(
+        "--method",
+        choices=["pandoc", "typora"],
+        default="pandoc",
+        help="导出方式：pandoc（默认）或 typora",
+    )
+    parser.add_argument(
+        "--wait-load",
+        type=float,
+        default=3,
+        help="Typora 加载等待秒数（仅 typora 模式，默认 3）",
+    )
+    parser.add_argument(
+        "--wait-export",
+        type=float,
+        default=3,
+        help="导出完成等待秒数（仅 typora 模式，默认 3）",
+    )
+
+    args = parser.parse_args()
+
+    if args.method == "typora":
+        exporter = TyporaExporter(
+            target=args.target,
+            wait_load=args.wait_load,
+            wait_export=args.wait_export,
+        )
+    else:
+        exporter = PandocExporter(target=args.target)
+
+    exporter.convert()
 
 
 if __name__ == "__main__":
-    args = argument_parser()
-    converter = ConvertMD(target_folder=args.target_folder)
-    converter.convert()
+    main()

@@ -1,0 +1,116 @@
+import os
+import subprocess
+import time
+from pathlib import Path
+
+import pyautogui
+
+pyautogui.FAILSAFE = False
+pyautogui.PAUSE = 0.1
+
+
+class TyporaExporter:
+    """通过 Typora GUI 自动化批量导出 Markdown 为 PDF，效果与 Typora 原生一致。"""
+
+    TYPERA_EXE = r"C:\Program Files\Typora\Typora.exe"
+
+    # 文件菜单中"导出"的位置（从"另存为"再往下 8 个）
+    EXPORT_MENU_INDEX = 15
+    # "导出"子菜单中 PDF 的位置
+    PDF_SUBMENU_INDEX = 1
+
+    def __init__(self, target, wait_load=3, wait_export=3):
+        self.target = Path(target)
+        self.wait_load = wait_load
+        self.wait_export = wait_export
+
+    def check_prerequisites(self) -> bool:
+        if not os.path.isfile(self.TYPERA_EXE):
+            print(f"Typora 未安装: {self.TYPERA_EXE}")
+            return False
+        if self.target.is_file() and self.target.suffix == ".md":
+            return True
+        if self.target.is_dir():
+            return True
+        print(f"目标不存在或不是 .md 文件/文件夹: {self.target}")
+        return False
+
+    def iter_markdown_files(self):
+        if self.target.is_file():
+            yield self.target
+        else:
+            for root, _, files in os.walk(self.target):
+                for file in files:
+                    if file.endswith(".md"):
+                        yield Path(root) / file
+
+    @staticmethod
+    def navigate_to_pdf_export(wait=0.3):
+        """从 File 菜单已打开的状态，导航到 导出 -> PDF。"""
+        pyautogui.press("home")
+        time.sleep(wait)
+        for _ in range(TyporaExporter.EXPORT_MENU_INDEX):
+            pyautogui.press("down")
+            time.sleep(0.08)
+        pyautogui.press("right")
+        time.sleep(wait)
+        for _ in range(TyporaExporter.PDF_SUBMENU_INDEX):
+            pyautogui.press("down")
+            time.sleep(0.08)
+        pyautogui.press("enter")
+
+    def convert_one_file(self, md_path: Path) -> bool:
+        print(f"正在导出: {md_path.name} ...")
+
+        try:
+            subprocess.Popen([self.TYPERA_EXE, str(md_path)])
+            time.sleep(self.wait_load)
+
+            pyautogui.hotkey("alt", "f")
+            time.sleep(0.5)
+
+            self.navigate_to_pdf_export(wait=0.3)
+
+            time.sleep(1.5)
+            pyautogui.press("enter")
+            time.sleep(self.wait_export)
+
+            pyautogui.hotkey("ctrl", "w")
+            time.sleep(1)
+
+            expected_pdf = md_path.with_suffix(".pdf")
+            if expected_pdf.is_file():
+                print(f"  导出成功: {expected_pdf}")
+                return True
+            else:
+                print(f"  未找到 PDF: {expected_pdf}")
+                return False
+
+        except Exception as e:
+            print(f"  导出失败: {e}")
+            try:
+                subprocess.run(["taskkill", "/f", "/im", "Typora.exe"],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            except Exception:
+                pass
+            return False
+
+    def convert(self):
+        if not self.check_prerequisites():
+            return
+
+        subprocess.run(["taskkill", "/f", "/im", "Typora.exe"],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        time.sleep(1)
+
+        files = list(self.iter_markdown_files())
+        print(f"找到 {len(files)} 个 Markdown 文件")
+        print("开始批量导出（期间请勿操作鼠标键盘）...\n")
+
+        success = 0
+        for i, md_path in enumerate(files, 1):
+            print(f"[{i}/{len(files)}]", end=" ")
+            if self.convert_one_file(md_path):
+                success += 1
+
+        print(f"\n导出完成！成功 {success}/{len(files)} 个文件。")
